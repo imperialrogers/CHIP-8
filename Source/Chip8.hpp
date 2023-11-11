@@ -1,5 +1,10 @@
 #include <cstdint>
+#include <random>
 using namespace std;
+
+
+const unsigned int VIDEO_HEIGHT = 32;
+const unsigned int VIDEO_WIDTH = 64;
 
 class Chip8{
     public:
@@ -44,7 +49,7 @@ class Chip8{
         void OP_Fx33(); // Store BCD representation of Vx in memory locations I, I+1, and I+2
         void OP_Fx55(); // Store registers V0 through Vx in memory starting at location I
         void OP_Fx65(); // Read registers V0 through Vx from memory starting at location I
-        
+
 
 
         //////////////////////////////////////////////Components Of Chip 8 Emulator//////////////////////////////////////////
