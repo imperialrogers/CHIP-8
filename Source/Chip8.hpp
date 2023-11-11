@@ -10,11 +10,15 @@ class Chip8{
     public:
         Chip8();
         void LoadROM(const char *filename);
-
-
-    private:
+        void Cycle();
+        
         //////////////////////////////////////////////Instructions Of Chip 8 Emulator//////////////////////////////////////////
+        void Table0();
+	    void Table8();
+	    void TableE();
+	    void TableF();
 
+        void OP_NULL(); // Clear the display
         void OP_00E0(); // Clear the display
         void OP_00EE(); // Return from a subroutine
         void OP_1nnn(); // Jump to location nnn
@@ -69,4 +73,12 @@ class Chip8{
         //Initializing Variables
         default_random_engine randGen; // Random number generator
         uniform_int_distribution<uint8_t> randByte; // Random byte
+
+        //Function Pointers
+        typedef void (Chip8::*Chip8Func)();
+	    Chip8Func table[0xF + 1];
+	    Chip8Func table0[0xE + 1];
+	    Chip8Func table8[0xE + 1];
+	    Chip8Func tableE[0xE + 1];
+	    Chip8Func tableF[0x65 + 1];
 };
