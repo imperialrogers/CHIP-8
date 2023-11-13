@@ -42,29 +42,36 @@ int main(int argc, char** argv)
     auto lastCycleTime = std::chrono::high_resolution_clock::now(); // Starting time
     bool quit = false; // variable to check if the exit condition is true
 
-    // Run the emulation cycles in loop until exit condition becomes true
-    while(!quit)
-    {
-        // Register key input
-        quit = platform.ProcessInput(chip8.keypad);
-
-        auto currentTime = std::chrono::high_resolution_clock::now();
-
-        // Variable to store elapsed time between last cycle and this one
-        float dt = std::chrono::duration<float, std::chrono::milliseconds::period>(currentTime - lastCycleTime).count();
-
-        if (dt > cycleDelay)
+    try{
+        // Run the emulation cycles in loop until exit condition becomes true
+        while(!quit)
         {
-            // Update the last cycle time to current time
-            lastCycleTime = currentTime;
+            // Register key input
+            quit = platform.ProcessInput(chip8.keypad);
 
-            // Execute the emulation cycle
-            chip8.Cycle();
+            auto currentTime = std::chrono::high_resolution_clock::now();
 
-            // Update the display
-            platform.Update(chip8.video, videoPitch);
+            // Variable to store elapsed time between last cycle and this one
+            float dt = std::chrono::duration<float, std::chrono::milliseconds::period>(currentTime - lastCycleTime).count();
+
+            if (dt > cycleDelay)
+            {
+                // Update the last cycle time to current time
+                lastCycleTime = currentTime;
+
+                // Execute the emulation cycle
+                chip8.Cycle();
+
+                // Update the display
+                platform.Update(chip8.video, videoPitch);
+            }
         }
     }
+    catch (const char* e)
+    {
+        cerr << e << std::endl;
+    }
+
 
     return 0;
 }
