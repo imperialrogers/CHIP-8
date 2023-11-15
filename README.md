@@ -2,6 +2,10 @@
 
 This is a Chip-8 compiler designed to emulate and run Chip-8 programs.
 
+|           ![Space Invaders](images/space-invaders.png)           |     ![Space Invaders Game](images/space-invaders-game.png)     |
+| :--------------------------------------------: | :------------------------------------: |
+| ![Soccer](images/soccer.png) | ![Tetris](images/Tetris.png) |
+
 ## Overview
 
 The Chip-8 is an interpreted programming language used in the 1970s and early 1980s on early microcomputers. This project aims to provide a compiler that can translate Chip-8 programs into executable code.
