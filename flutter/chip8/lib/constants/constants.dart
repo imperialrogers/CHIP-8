@@ -1,11 +1,8 @@
-import 'dart:ffi';
-import 'dart:typed_data';
-
-import 'package:flutter/material.dart';
+///////////////////////////////////////////CONSTANTS///////////////////////////////////////////
 
 const int SCREEN_WIDTH = 64;
-const int SCREEN_LENGTH = 32;
-const int SCREEN_SIZE = SCREEN_WIDTH * SCREEN_LENGTH;
+const int SCREEN_HEIGHT = 32;
+const int SCREEN_SIZE = SCREEN_WIDTH * SCREEN_HEIGHT;
 const int START_ADDRESS = 0x200; // Main code of the program starts at 0x200
 const int FONTSET_SIZE =
     80; // Size of Font Set to represent on screen (0-9 and A-F)
