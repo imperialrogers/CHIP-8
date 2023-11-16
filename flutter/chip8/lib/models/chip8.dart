@@ -106,6 +106,7 @@ class Chip8 {
   }
 
   loadFont() {
+    // ignore: unused_local_variable
     int offset = 0;
     for (int i = 0; i < FONTSET.length; i++) {
       var character = FONTSET[i];

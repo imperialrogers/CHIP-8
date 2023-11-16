@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:async';
 
 import 'package:chip8/decoder/decoder.dart';
@@ -13,32 +15,22 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Chip-8 Emulator',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
         useMaterial3: true,
       ),
-      home: MyHomePage(title: 'Chip-8 Emulator'),
+      home: MyHomePage(title: 'C-8'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String? title;
 
@@ -47,7 +39,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // ignore: unused_field
   int _counter = 0;
+  String _game = "Tetris";
   List<int> _buttonOrder = [
     1,
     2,
@@ -92,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _newTimer([int t = 10]) {
-    this?._timer?.cancel();
+    this._timer.cancel();
     this._timer = new Timer.periodic(new Duration(milliseconds: t), (_) {
       setState(() {
         screenImage = new Image.memory(
@@ -106,8 +100,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   loadRom() {
+    // ignore: unnecessary_null_comparison
     if (_timer != null) _timer.cancel();
-    final data = rootBundle.load('assets/danm8ku.ch8').then((item) {
+    final data = rootBundle.load('assets/roms/${_game}.ch8').then((item) {
       var rom = item.buffer.asUint8List();
 
       this.chip8.loadRom(rom);
@@ -137,35 +132,161 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title!),
+        toolbarHeight: 70,
+        title: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5.0),
+          child: Text(
+            "CHIP8",
+            style: TextStyle(
+              fontFamily: "gunplay",
+              fontSize: 50,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        primary: true,
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.black,
       ),
-      body: Center(
+      body: Container(
+        color: Colors.black,
+        child: Center(
           child: Column(
-        children: <Widget>[
-          screenImage,
-          Expanded(
-              child: GridView.count(
-                  crossAxisCount: 4,
-                  children: List.generate(16, (i) {
-                    return new Listener(
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.grey, border: Border.all()),
-                        child: Center(
-                            child: Text(
-                                '${this._buttonOrder[i].toRadixString(16)}')),
+            children: [
+              Container(
+                child: screenImage,
+                padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton(
+                        dropdownColor: Colors.black,
+                        padding: EdgeInsets.only(left: 20),
+                        disabledHint: Text(
+                          "INSERT ROM",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        icon: Icon(
+                          Icons.adf_scanner_outlined,
+                        ),
+                        hint: Text(
+                          "INSERT ROM",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                        isExpanded: true,
+                        selectedItemBuilder: (context) {
+                          return [
+                            DropdownMenuItem(
+                              child: Text(
+                                "INSERT ROM",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ];
+                        },
+                        alignment: Alignment.center,
+                        items: List.from(games, growable: false)
+                            .map((e) => DropdownMenuItem(
+                                  child: Text(
+                                    e,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  value: e,
+                                ))
+                            .toList(),
+                        onChanged: (dynamic obj) {
+                          setState(() {
+                            this._game = obj;
+                          });
+                          this.chip8.resetCPU();
+                          this.chip8.resetMemory();
+                          this.loadRom();
+                        },
                       ),
-                      onPointerDown: (_) {
-                        this._pressKey(this._buttonOrder[i]);
+                    ),
+                  ),
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        padding: MaterialStateProperty.all<EdgeInsets>(
+                          EdgeInsets.all(5.0),
+                        ),
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                          Colors.black,
+                        ),
+                      ),
+                      onPressed: () {
+                        this.chip8.stop();
                       },
-                      onPointerUp: (_) {
-                        this._releaseKey(this._buttonOrder[i]);
+                      child: Text(
+                        "STOP",
+                        style: TextStyle(
+                          fontFamily: " gunplay",
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        padding: MaterialStateProperty.all<EdgeInsets>(
+                          EdgeInsets.all(5.0),
+                        ),
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                          Colors.black,
+                        ),
+                      ),
+                      onPressed: () {
+                        this.chip8.start();
                       },
-                    );
-                  })))
-        ],
-      )),
-      // This trailing comma makes auto-formatting nicer for build methods.
+                      child: Text(
+                        "START",
+                        style: TextStyle(
+                          fontFamily: " gunplay",
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: GridView.count(
+                  padding:
+                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+                  crossAxisCount: 4,
+                  children: List.generate(
+                    16,
+                    (i) {
+                      return new Listener(
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.grey, border: Border.all()),
+                          child: Center(
+                              child: Text(
+                                  '${this._buttonOrder[i].toRadixString(16)}')),
+                        ),
+                        onPointerDown: (_) {
+                          this._pressKey(this._buttonOrder[i]);
+                        },
+                        onPointerUp: (_) {
+                          this._releaseKey(this._buttonOrder[i]);
+                        },
+                      );
+                    },
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -189,7 +310,21 @@ class _MyHomePageState extends State<MyHomePage> {
           16,
           (i) {
             return new GestureDetector(
-              child: ElevatedButton(onPressed: () {}, child: Text("${i}")),
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  padding: MaterialStateProperty.all<EdgeInsets>(
+                    EdgeInsets.all(10.0),
+                  ),
+                ),
+                onPressed: () {},
+                child: Text(
+                  "${i}",
+                  style: TextStyle(
+                    fontSize: 60,
+                    fontFamily: " gunplay",
+                  ),
+                ),
+              ),
               onTapDown: this._pressKey(i),
               onTapUp: this._releaseKey(i),
             );

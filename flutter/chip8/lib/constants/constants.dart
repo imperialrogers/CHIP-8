@@ -30,3 +30,19 @@ const List<int> FONTSET = [
   0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
   0xF0, 0x80, 0xF0, 0x80, 0x80 // F
 ];
+
+const List<String> games = [
+  "Tetris",
+  "Missile",
+  "Pong",
+  "Pong2",
+  "Pong3",
+  "Pong22",
+  "RL",
+  "slipperyslope",
+  "Soccer",
+  "Space_Invaders",
+  "Worm",
+  "X-Mirror",
+  "ZeroPong"
+];
