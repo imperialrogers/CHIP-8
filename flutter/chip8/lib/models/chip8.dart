@@ -98,22 +98,30 @@ class Chip8 {
     steps++;
   }
 
+  reset() {
+    stop();
+    this.resetCPU();
+    initializeClocks();
+    resetMemory();
+  }
+
   loadFont() {
+    int offset = 0;
     for (int i = 0; i < FONTSET.length; i++) {
       var character = FONTSET[i];
       this.memory.setMemory(i, character);
     }
   }
 
-  void resetMemory() {
+  resetMemory() {
     this.memory = new Memory();
     this.stack = new MemoryStack();
     loadFont();
   } // Resets the memory buffer
 
-  void stop() {
-    this.mainClock.cancel();
+  stop() {
     this.timerClock.cancel();
+    this.mainClock.cancel();
   } // Stop the clock execution
 
   void initializeClocks() {
@@ -123,8 +131,9 @@ class Chip8 {
       this.timerStep();
     });
 
-    this.mainClock = Timer.periodic(Duration(milliseconds: CLOCK_SPEED), (_) {
-      this.timerStep();
+    this.mainClock =
+        new Timer.periodic(Duration(milliseconds: CLOCK_SPEED), (_) {
+      clockStep();
     });
   } // Initialize Clocks with default values
 
@@ -135,18 +144,18 @@ class Chip8 {
   } // Starts the code execution
 
   void loadRom(Uint8List rom) {
+    print('LOADING ROM');
     for (int i = 0; i < rom.length; i++) {
       this.memory.setMemory(START_ADDRESS + i, rom[i]);
     }
 
     //printing the rom
-    for (var i = 0; i < this.memory.memory.lengthInBytes; i++) {
-      debugPrint(this.memory.getMemory(i));
-    }
+    // for (var i = 0; i < this.memory.memory.lengthInBytes; i++) {
+    //   print(this.memory.getMemory(i));
+    // }
   }
 
-  void loadAndStartRom(Uint8List rom) {
-    print('LOADING ROM');
+  void loadRomAndStart(Uint8List rom) {
     this.loadRom(rom);
     this.start();
   }

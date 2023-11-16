@@ -1,19 +1,23 @@
 // Implementation Of Stack In Dart
 
-class MemoryStack {
-  final List<int> _stack = [];
+import 'dart:collection';
 
-  void push(int data) {
-    if (_stack.length >= 16) return;
-    _stack.insert(_stack.length - 1, data);
-  }
+class MemoryStack {
+  Queue stackQueue = new Queue<int>();
 
   int pop() {
-    if (_stack.isEmpty) return 0;
-    return _stack.removeLast();
+    if (this.stackQueue.length == 0) return 0;
+    return stackQueue.removeLast();
+  }
+
+  void push(int index) {
+    if (this.stackQueue.length >= 16) {
+      return;
+    }
+    this.stackQueue.addLast(index);
   }
 
   int sp() {
-    return _stack.length;
+    return this.stackQueue.length;
   }
 }

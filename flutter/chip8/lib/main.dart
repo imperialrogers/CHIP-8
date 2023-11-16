@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
     0xA,
     0,
     0xB,
-    0xF
+    0xF,
   ];
 
   Set<int> _keys = new Set<int>();
@@ -107,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   loadRom() {
     if (_timer != null) _timer.cancel();
-    final data = rootBundle.load('assets/Pong.ch8').then((item) {
+    final data = rootBundle.load('assets/danm8ku.ch8').then((item) {
       var rom = item.buffer.asUint8List();
 
       this.chip8.loadRom(rom);
@@ -183,14 +183,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _generateButtonList() {
     return Expanded(
-        child: GridView.count(
-            crossAxisCount: 4,
-            children: List.generate(16, (i) {
-              return new GestureDetector(
-                child: ElevatedButton(onPressed: () {}, child: Text("${i}")),
-                onTapDown: this._pressKey(i),
-                onTapUp: this._releaseKey(i),
-              );
-            })));
+      child: GridView.count(
+        crossAxisCount: 4,
+        children: List.generate(
+          16,
+          (i) {
+            return new GestureDetector(
+              child: ElevatedButton(onPressed: () {}, child: Text("${i}")),
+              onTapDown: this._pressKey(i),
+              onTapUp: this._releaseKey(i),
+            );
+          },
+        ),
+      ),
+    );
   }
 }

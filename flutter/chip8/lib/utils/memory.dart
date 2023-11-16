@@ -2,10 +2,14 @@ import 'dart:typed_data';
 import 'package:chip8/utils/vram.dart';
 
 class Memory {
-  ByteData memory = ByteData.view(Uint8List(4096).buffer);
+  late ByteData memory;
   VRAM vram = VRAM();
 
-  void setPixel(int x, int y, bool value) {
+  Memory() {
+    this.memory = ByteData.view(Uint8List(4096).buffer);
+  }
+
+  setPixel(int x, int y, bool value) {
     this.vram.setPixel(x, y, value);
   }
 
