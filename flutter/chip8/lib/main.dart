@@ -166,14 +166,20 @@ class _MyHomePageState extends State<MyHomePage> {
                         padding: EdgeInsets.only(left: 20),
                         disabledHint: Text(
                           "INSERT ROM",
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "gunplay",
+                          ),
                         ),
                         icon: Icon(
                           Icons.adf_scanner_outlined,
                         ),
                         hint: Text(
                           "INSERT ROM",
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "gunplay",
+                          ),
                         ),
                         borderRadius: BorderRadius.circular(10),
                         isExpanded: true,
@@ -182,27 +188,37 @@ class _MyHomePageState extends State<MyHomePage> {
                             DropdownMenuItem(
                               child: Text(
                                 "INSERT ROM",
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: "gunplay",
+                                ),
                               ),
                             ),
                           ];
                         },
                         alignment: Alignment.center,
-                        items: List.from(games, growable: false)
-                            .map((e) => DropdownMenuItem(
-                                  child: Text(
-                                    e,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                    ),
+                        items: List.from(
+                          games,
+                          growable: false,
+                        )
+                            .map(
+                              (e) => DropdownMenuItem(
+                                child: Text(
+                                  e,
+                                  style: TextStyle(
+                                    color: Colors.white,
                                   ),
-                                  value: e,
-                                ))
+                                ),
+                                value: e,
+                              ),
+                            )
                             .toList(),
                         onChanged: (dynamic obj) {
-                          setState(() {
-                            this._game = obj;
-                          });
+                          setState(
+                            () {
+                              this._game = obj;
+                            },
+                          );
                           this.chip8.resetCPU();
                           this.chip8.resetMemory();
                           this.loadRom();
@@ -222,11 +238,12 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       onPressed: () {
                         this.chip8.stop();
+                        this.chip8.resetMemory();
                       },
                       child: Text(
                         "STOP",
                         style: TextStyle(
-                          fontFamily: " gunplay",
+                          fontFamily: "gunplay",
                           color: Colors.white,
                         ),
                       ),
@@ -243,12 +260,20 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       onPressed: () {
-                        this.chip8.start();
+                        this.chip8.resetCPU();
+                        this.chip8.resetMemory();
+                        final data =
+                            rootBundle.load('assets/roms/${_game}.ch8').then(
+                          (item) {
+                            var rom = item.buffer.asUint8List();
+                            this.chip8.loadRomAndStart(rom);
+                          },
+                        );
                       },
                       child: Text(
                         "START",
                         style: TextStyle(
-                          fontFamily: " gunplay",
+                          fontFamily: "gunplay",
                           color: Colors.white,
                         ),
                       ),
@@ -266,11 +291,23 @@ class _MyHomePageState extends State<MyHomePage> {
                     (i) {
                       return new Listener(
                         child: Container(
+                          margin: const EdgeInsets.all(5.0),
                           decoration: BoxDecoration(
-                              color: Colors.grey, border: Border.all()),
+                            color: Colors.black,
+                            border: Border.all(
+                                style: BorderStyle.solid, color: Colors.white),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                           child: Center(
-                              child: Text(
-                                  '${this._buttonOrder[i].toRadixString(16)}')),
+                            child: Text(
+                              '${this._buttonOrder[i].toRadixString(16)}',
+                              style: TextStyle(
+                                fontSize: 30,
+                                fontFamily: "gunplay",
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                         ),
                         onPointerDown: (_) {
                           this._pressKey(this._buttonOrder[i]);
@@ -321,7 +358,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   "${i}",
                   style: TextStyle(
                     fontSize: 60,
-                    fontFamily: " gunplay",
+                    fontFamily: "gunplay",
                   ),
                 ),
               ),
