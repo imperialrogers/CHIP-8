@@ -99,6 +99,10 @@ flutter install
 
 - Some ROMs are provided in the /ROMs directory.
 
+`Download Mobile APK`
+
+- You can download the mobile apk from release section or from the given link: [DOWNLOAD APK](https://github.com/imperialrogers/CHIP-8/releases/download/v0.0.0-test/Chip8.apk)
+
 ## Contributing
 
 Whether you have some feauture requests/ideas, code improvements, refactoring, performance improvements, help is always Welcome. The more is done, better it gets.
