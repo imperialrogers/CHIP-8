@@ -1,15 +1,16 @@
-// ignore_for_file: unused_local_variable
-
 import 'dart:async';
-
 import 'package:chip8/decoder/decoder.dart';
 import 'package:chip8/models/chip8.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'constants/constants.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
   runApp(const MyApp());
 }
 
@@ -24,25 +25,24 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
         useMaterial3: true,
       ),
-      home: MyHomePage(title: 'C-8'),
+      home: Chip8Screen(title: 'C-8'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, this.title}) : super(key: key);
+class Chip8Screen extends StatefulWidget {
+  Chip8Screen({Key? key, this.title}) : super(key: key);
 
   final String? title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _Chip8ScreenState createState() => _Chip8ScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  // ignore: unused_field
-  int _counter = 0;
-  String _game = "Tetris";
-  List<int> _buttonOrder = [
+class _Chip8ScreenState extends State<Chip8Screen> {
+  Set<int> inputKeys = new Set<int>();
+  String _gameROM = "Tetris";
+  List<int> buttonList = [
     1,
     2,
     3,
@@ -60,13 +60,6 @@ class _MyHomePageState extends State<MyHomePage> {
     0xB,
     0xF,
   ];
-
-  Set<int> _keys = new Set<int>();
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
 
   Chip8 chip8 = Chip8();
   Image screenImage = new Image.memory(
@@ -102,10 +95,10 @@ class _MyHomePageState extends State<MyHomePage> {
   loadRom() {
     // ignore: unnecessary_null_comparison
     if (_timer != null) _timer.cancel();
-    final data = rootBundle.load('assets/roms/${_game}.ch8').then((item) {
-      var rom = item.buffer.asUint8List();
+    final data = rootBundle.load('assets/roms/${_gameROM}.ch8').then((item) {
+      var ROM = item.buffer.asUint8List();
 
-      this.chip8.loadRom(rom);
+      this.chip8.loadRom(ROM);
       this.chip8.start();
       _timer = new Timer.periodic(new Duration(milliseconds: 10), (_) {
         setState(() {
@@ -130,9 +123,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    double _screenHeight = MediaQuery.of(context).size.height;
+    double _screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 70,
+        toolbarHeight: _screenHeight * 0.07,
         title: Padding(
           padding: const EdgeInsets.symmetric(vertical: 5.0),
           child: Text(
@@ -147,6 +142,16 @@ class _MyHomePageState extends State<MyHomePage> {
         primary: true,
         backgroundColor: Colors.black,
         foregroundColor: Colors.black,
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.info_outline_rounded,
+              color: Colors.white,
+            ),
+            tooltip: "Help",
+            onPressed: _launchURL,
+          ),
+        ],
       ),
       body: Container(
         color: Colors.black,
@@ -216,7 +221,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         onChanged: (dynamic obj) {
                           setState(
                             () {
-                              this._game = obj;
+                              this._gameROM = obj;
                             },
                           );
                           this.chip8.resetCPU();
@@ -229,6 +234,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Expanded(
                     child: ElevatedButton(
                       style: ButtonStyle(
+                        splashFactory: NoSplash.splashFactory,
                         padding: MaterialStateProperty.all<EdgeInsets>(
                           EdgeInsets.all(5.0),
                         ),
@@ -252,6 +258,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Expanded(
                     child: ElevatedButton(
                       style: ButtonStyle(
+                        splashFactory: NoSplash.splashFactory,
                         padding: MaterialStateProperty.all<EdgeInsets>(
                           EdgeInsets.all(5.0),
                         ),
@@ -263,10 +270,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         this.chip8.resetCPU();
                         this.chip8.resetMemory();
                         final data =
-                            rootBundle.load('assets/roms/${_game}.ch8').then(
+                            rootBundle.load('assets/roms/${_gameROM}.ch8').then(
                           (item) {
-                            var rom = item.buffer.asUint8List();
-                            this.chip8.loadRomAndStart(rom);
+                            var ROM = item.buffer.asUint8List();
+                            this.chip8.loadRomAndStart(ROM);
                           },
                         );
                       },
@@ -300,7 +307,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           child: Center(
                             child: Text(
-                              '${this._buttonOrder[i].toRadixString(16)}',
+                              '${this.buttonList[i].toRadixString(16)}',
                               style: TextStyle(
                                 fontSize: 30,
                                 fontFamily: "gunplay",
@@ -310,16 +317,16 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                         onPointerDown: (_) {
-                          this._pressKey(this._buttonOrder[i]);
+                          this.pressKey(this.buttonList[i]);
                         },
                         onPointerUp: (_) {
-                          this._releaseKey(this._buttonOrder[i]);
+                          this.releaseKey(this.buttonList[i]);
                         },
                       );
                     },
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -327,19 +334,19 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  _pressKey(int key) {
-    this._keys.add(key);
+  pressKey(int key) {
+    this.inputKeys.add(key);
     this.chip8.pressKey(key);
   }
 
-  _releaseKey(int key) {
-    this._keys.remove(key);
+  releaseKey(int key) {
+    this.inputKeys.remove(key);
     this.chip8.releaseKey(key);
 
     Future.delayed(Duration(milliseconds: 1000 ~/ 60), () {});
   }
 
-  _generateButtonList() {
+  Buttons() {
     return Expanded(
       child: GridView.count(
         crossAxisCount: 4,
@@ -362,12 +369,19 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
-              onTapDown: this._pressKey(i),
-              onTapUp: this._releaseKey(i),
+              onTapDown: this.pressKey(i),
+              onTapUp: this.releaseKey(i),
             );
           },
         ),
       ),
     );
+  }
+}
+
+_launchURL() async {
+  final Uri _url = Uri.parse('https://chintanchawda.netlify.app/');
+  if (!await launchUrl(_url)) {
+    throw Exception('Could not launch $_url');
   }
 }

@@ -78,3 +78,22 @@ const List<String> games = [
   "X-Mirror",
   "ZeroPong"
 ];
+
+const List<int> buttonOrder = [
+  1,
+  2,
+  3,
+  0xC,
+  4,
+  5,
+  6,
+  0xD,
+  7,
+  8,
+  9,
+  0xE,
+  0xA,
+  0,
+  0xB,
+  0xF,
+];

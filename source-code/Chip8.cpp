@@ -127,13 +127,13 @@ void Chip8::dissembler(){
             (*this).OPCODE_9xy0();
             break;
         case 0xA:
-            (*this).OPCODE_Annn();  
+            (*this).OPCODE_ANNN();  
             break;
         case 0xB:
-            (*this).OPCODE_Bnnn();
+            (*this).OPCODE_BNNN();
             break;
         case 0xC:
-            (*this).OPCODE_Cxkk();
+            (*this).OPCODE_CXKK();
             break;
         case 0xD:
             (*this).OPCODE_Dxyn();
@@ -415,21 +415,20 @@ void Chip8::OPCODE_9xy0()
 	}
 }
 
-void Chip8::OPCODE_Annn()
+void Chip8::OPCODE_ANNN()
 {
 	uint16_t address = opcode & 0x0FFFu;
-
 	index = address;
 }
 
-void Chip8::OPCODE_Bnnn()
+void Chip8::OPCODE_BNNN()
 {
 	uint16_t address = opcode & 0x0FFFu;
 
 	pc = registers[0] + address;
 }
 
-void Chip8::OPCODE_Cxkk()
+void Chip8::OPCODE_CXKK()
 {
 	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 	uint8_t byte = opcode & 0x00FFu;
@@ -612,16 +611,10 @@ void Chip8::OPCODE_Fx15()
 		uint8_t Vx = (opcode & 0x0F00u) >> 8u;
 		uint8_t value = registers[Vx];
 
-		// Ones-place
-		memory[index + 2] = value % 10;
-		value /= 10;
-
-		// Tens-place
-		memory[index + 1] = value % 10;
-		value /= 10;
-
-		// Hundreds-place
-		memory[index] = value % 10;
+		for(int i=0; i<=2; i++){
+			memory[index+i]=value%10;
+			value/=10;
+		}
 	}
 
 	void Chip8::OPCODE_Fx55()

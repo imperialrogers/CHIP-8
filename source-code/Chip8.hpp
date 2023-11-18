@@ -34,9 +34,9 @@ class Chip8{
         void OPCODE_8xy7(); // Set Vx = Vy - Vx, set VF = NOT borrow
         void OPCODE_8xyE(); // Set Vx = Vx SHL 1
         void OPCODE_9xy0(); // Skip next instruction if Vx != Vy
-        void OPCODE_Annn(); // Set I = nnn
-        void OPCODE_Bnnn(); // Jump to location nnn + V0
-        void OPCODE_Cxkk(); // Set Vx = random byte AND kk
+        void OPCODE_ANNN(); // Set I = nnn
+        void OPCODE_BNNN(); // Jump to location nnn + V0
+        void OPCODE_CXKK(); // Set Vx = random byte AND kk
         void OPCODE_Dxyn(); // Display n-byte sprite starting at memory location I at (Vx, Vy), set VF = collision
         void OPCODE_Ex9E(); // Skip next instruction if key with the value of Vx is pressed
         void OPCODE_ExA1(); // Skip next instruction if key with the value of Vx is not pressed
@@ -84,9 +84,9 @@ class Chip8{
     //         {0x7, &Chip8::OPCODE_7xkk},
     //         {0x8, &Chip8::OPCODE_8},
     //         {0x9, &Chip8::OPCODE_9xy0},
-    //         {0xA, &Chip8::OPCODE_Annn},
-    //         {0xB, &Chip8::OPCODE_Bnnn},
-    //         {0xC, &Chip8::OPCODE_Cxkk},
+    //         {0xA, &Chip8::OPCODE_ANNN},
+    //         {0xB, &Chip8::OPCODE_BNNN},
+    //         {0xC, &Chip8::OPCODE_CXKK},
     //         {0xD, &Chip8::OPCODE_Dxyn},
     //         {0xE, &Chip8::OPCODE_E},
     //         {0xF, &Chip8::OPCODE_F}};
@@ -144,9 +144,9 @@ class Chip8{
         // table.insert({0x7, &Chip8::OPCODE_7xkk});
         // table.insert({0x8, &Chip8::OPCODE_8});
         // table.insert({0x9, &Chip8::OPCODE_9xy0});
-        // table.insert({0xA, &Chip8::OPCODE_Annn});
-        // table.insert({0xB, &Chip8::OPCODE_Bnnn});
-        // table.insert({0xC, &Chip8::OPCODE_Cxkk});
+        // table.insert({0xA, &Chip8::OPCODE_ANNN});
+        // table.insert({0xB, &Chip8::OPCODE_BNNN});
+        // table.insert({0xC, &Chip8::OPCODE_CXKK});
         // table.insert({0xD, &Chip8::OPCODE_Dxyn});
         // table.insert({0xE, &Chip8::OPCODE_E});
         // table.insert({0xF, &Chip8::OPCODE_F});
