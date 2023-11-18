@@ -163,62 +163,62 @@ class Chip8 {
 
   //////////////////////////////////////////////////Game Logic////////////////////////////////////////////////
 
-  _0x0_CLEAR_OR_RETURN(int opcode) {
+  OPCODE_0x0(int opcode) {
     int nn = OpCode.NN(opcode);
     if (nn == 0xE0) {
-      this._0x00E0_CLEAR_SCREEN(opcode);
+      this.OPCODE_0x00E0(opcode);
     } else if (nn == 0xEE) {
-      this._0x00E0_RETRUN_FROM_SUBROUTINE();
+      this.OPCODE_0x00EE();
     }
   }
 
-  _0x00E0_CLEAR_SCREEN(int opcode) {
+  OPCODE_0x00E0(int opcode) {
     this.memory.vram.reset();
   }
 
-  _0x00E0_RETRUN_FROM_SUBROUTINE() {
+  OPCODE_0x00EE() {
     this.pc = this.stack.pop();
   }
 
-  _0x1_JUMP(int opcode) {
+  OPCODE_0x1(int opcode) {
     pc = OpCode.NNN(opcode);
   }
 
-  _0x2_CALL_SUBROUTINE(int opcode) {
+  OPCODE_0x2(int opcode) {
     this.stack.push(this.pc);
     this.pc = OpCode.NNN(opcode);
   }
 
-  _0x3_SKIP_IF_NN(int opcode) {
+  OPCODE_0x3(int opcode) {
     if (this.registers[OpCode.X(opcode)] == OpCode.NN(opcode)) {
       //Skip next instruction
       this.pc += 2;
     }
   }
 
-  _0x4_SKIP_IF_NN(int opcode) {
+  OPCODE_0x4(int opcode) {
     if (this.registers[OpCode.X(opcode)] != OpCode.NN(opcode)) {
       //Skip next instruction
       this.pc += 2;
     }
   }
 
-  _0x5_SKIP_IF_XY(int opcode) {
+  OPCODE_0x5(int opcode) {
     if (this.registers[OpCode.X(opcode)] == this.registers[OpCode.Y(opcode)]) {
       //Skip next instruction
       this.pc += 2;
     }
   }
 
-  _0x6_SET_X_TO_NN(int opcode) {
+  OPCODE_0x6(int opcode) {
     this.registers[OpCode.X(opcode)] = OpCode.NN(opcode);
   }
 
-  _0x7XNN_ADD_NN_TO_X(int opcode) {
+  OPCODE_0x7(int opcode) {
     this.registers[OpCode.X(opcode)] += (OpCode.NN(opcode) as num).round();
   }
 
-  _0x8_MATH(int opcode) {
+  OPCODE_0x8_MAIN(int opcode) {
     int n = OpCode.N(opcode);
     if (this.MathOpCodes.containsKey(n)) {
       this.MathOpCodes[n]!(opcode);
@@ -227,23 +227,23 @@ class Chip8 {
     }
   }
 
-  _0x8XY0_SET_X_TO_Y(int opcode) {
+  OPCODE_0x8XY0(int opcode) {
     this.registers[OpCode.X(opcode)] = this.registers[OpCode.Y(opcode)];
   }
 
-  _0x8XY1_SET_X_TO_OR_Y(int opcode) {
+  OPCODE_0x8XY1(int opcode) {
     this.registers[OpCode.X(opcode)] |= this.registers[OpCode.Y(opcode)];
   }
 
-  _0x8XY2_SET_X_TO_AND_Y(int opcode) {
+  OPCODE_0x8XY2(int opcode) {
     this.registers[OpCode.X(opcode)] &= this.registers[OpCode.Y(opcode)];
   }
 
-  _0x8XY3_SET_X_TO_XOR_Y(int opcode) {
+  OPCODE_0x8XY3(int opcode) {
     this.registers[OpCode.X(opcode)] ^= this.registers[OpCode.Y(opcode)];
   }
 
-  _0x8XY4_ADD_X_TO_Y_CARRY(int opcode) {
+  OPCODE_08XY4(int opcode) {
     int sum =
         this.registers[OpCode.X(opcode)] + this.registers[OpCode.Y(opcode)];
     // Sum bigger than 0xFF (256) --> Carry
@@ -252,7 +252,7 @@ class Chip8 {
     this.registers[OpCode.X(opcode)] += this.registers[OpCode.Y(opcode)];
   }
 
-  _0x8XY5_SUB_Y_FROM_X_CARRY(int opcode) {
+  OPCODE_0x8XY5(int opcode) {
     // Sum bigger than 0xFF (256) --> Carry
     if (this.registers[OpCode.X(opcode)] > this.registers[OpCode.Y(opcode)]) {
       this.registers[0xF] = 1;
@@ -263,12 +263,12 @@ class Chip8 {
     this.registers[OpCode.X(opcode)] -= this.registers[OpCode.Y(opcode)];
   }
 
-  _0x8XY6_SHIFTR_X_CARRY(int opcode) {
+  OPCODE_0x8XY6(int opcode) {
     this.registers[0xF] = this.registers[OpCode.X(opcode)] & 0x01;
     this.registers[OpCode.X(opcode)] >>= 1;
   }
 
-  _0x8XY7_SET_X_TO_Y_MINUS_X_CARRY(int opcode) {
+  OPCODE_0x8XY7(int opcode) {
     // Bitmask for last bit
     if (this.registers[OpCode.Y(opcode)] > this.registers[OpCode.X(opcode)]) {
       this.registers[0xF] = 1;
@@ -280,7 +280,7 @@ class Chip8 {
         this.registers[OpCode.Y(opcode)] - this.registers[OpCode.X(opcode)];
   }
 
-  _0x8XYE_SHIFTL_X_CARRY(int opcode) {
+  OPCODE_0x8XYE(int opcode) {
     // Bitmask for checking first bits
     if (this.registers[OpCode.X(opcode)] & 0x80 != 0) {
       this.registers[0xF] = 1;
@@ -291,27 +291,27 @@ class Chip8 {
     this.registers[OpCode.X(opcode)] = this.registers[OpCode.X(opcode)] << 1;
   }
 
-  _0x9XY0_SKIP_IF_X_NEQ_Y(int opcode) {
+  OPCODE_0x9XY0(int opcode) {
     if (this.registers[OpCode.X(opcode)] != this.registers[OpCode.Y(opcode)]) {
       //Skip next instruction
       this.pc += 2;
     }
   }
 
-  _0xA_SET_I_TO_NNN(int opcode) {
+  OPCODE_0xANNN(int opcode) {
     this.index = OpCode.NNN(opcode);
   }
 
-  _0xBNNN_JUMP_TO_NNN_PLUSregisters0(int opcode) {
+  OPCODE_0xBNNN(int opcode) {
     this.pc = (OpCode.NNN(opcode) + this.registers[0]) & 0xFFF;
   }
 
-  _0xCXNN_SET_X_RANDOM(int opcode) {
+  OPCODE_0xCNNN(int opcode) {
     this.registers[OpCode.X(opcode)] =
         this.randGenerator.nextInt(256) & OpCode.NN(opcode);
   }
 
-  _0xDXYN_DRAW_SPRITE(int opcode) {
+  OPCODE_DXYN(int opcode) {
     int width = 8;
     int height = OpCode.N(opcode);
 
@@ -345,26 +345,26 @@ class Chip8 {
     }
   }
 
-  _0xEX9E_SKIP_IF_KEY_PRESSED(int opcode) {
+  OPCODE_0xEX9E(int opcode) {
     int x = OpCode.X(opcode);
     if (this.instructionKeys.contains(this.registers[x])) this.pc += 2;
   }
 
-  _0xEXA1_SKIP_IF_KEY_NOT_PRESSED(int opcode) {
+  OPCODE_0xEXA1(int opcode) {
     int x = OpCode.X(opcode);
     if (!this.instructionKeys.contains(this.registers[x])) this.pc += 2;
   }
 
-  _0xE_KEY_SKIP(int opcode) {
+  OPCODE_0xE_MAIN(int opcode) {
     int nn = OpCode.NN(opcode);
     if (nn == 0x9e) {
-      _0xEX9E_SKIP_IF_KEY_PRESSED(opcode);
+      OPCODE_0xEX9E(opcode);
     } else if (nn == 0xA1) {
-      _0xEXA1_SKIP_IF_KEY_NOT_PRESSED(opcode);
+      OPCODE_0xEXA1(opcode);
     }
   }
 
-  _0xF_ETC(int opcode) {
+  OPCODE_0xF_MAIN(int opcode) {
     int nn = OpCode.NN(opcode);
     if (this.OtherOpCodesMap.containsKey(nn)) {
       this.OtherOpCodesMap[nn]!(opcode);
@@ -373,11 +373,11 @@ class Chip8 {
     }
   }
 
-  _0xFX07_SET_X_TO_DELAY(int opcode) {
+  OPCODE_0xFX07(int opcode) {
     this.registers[OpCode.X(opcode)] = this.delayTimer;
   }
 
-  _0xFX0A_WAIT_FOR_KEY(int opcode) {
+  OPCODE_0xFX0A(int opcode) {
     int x = OpCode.X(opcode);
     if (this.instructionKeys.length != 0) {
       this.registers[x] = instructionKeys.first;
@@ -387,38 +387,38 @@ class Chip8 {
     }
   }
 
-  _0xFX15_SET_DELAY_TO_X(int opcode) {
+  OPCODE_0xFX15(int opcode) {
     this.delayTimer = this.registers[OpCode.X(opcode)];
   }
 
-  _0xFX18_SET_SOUND_TO_X(int opcode) {
+  OPCODE_0xFX18(int opcode) {
     this.soundTimer = this.registers[OpCode.X(opcode)];
   }
 
-  _0xFX1E_ADD_X_TO_I(int opcode) {
+  OPCODE_0xFX1E(int opcode) {
     this.index = (this.index + this.registers[OpCode.X(opcode)]) & 0xFFF;
   }
 
-  _0xFX29_SET_I_SPRITE(int opcode) {
+  OPCODE_0xFX29(int opcode) {
     int x = OpCode.X(opcode);
     this.index = this.registers[x] * 5;
   }
 
-  _0xFX33_STORE_BCD_IN_MEMORY(int opcode) {
+  OPCODE_0xFX33(int opcode) {
     int val = this.registers[OpCode.X(opcode)];
     this.memory.setMemory(this.index, val ~/ 100);
     this.memory.setMemory(this.index + 1, (val % 100) ~/ 10);
     this.memory.setMemory(this.index + 2, (val % 10));
   }
 
-  _0xFX55_STORE_MEMORY(int opcode) {
+  OPCODE_0xFX55(int opcode) {
     int x = OpCode.X(opcode);
     for (int i = 0; i <= x; i++) {
       this.memory.setMemory(this.index + i, this.registers[i]);
     }
   }
 
-  _0xFX65_FILLregisters(int opcode) {
+  OPCODE_0xFX65(int opcode) {
     int x = OpCode.X(opcode);
     for (int i = 0; i <= x; i++) {
       this.registers[i] = this.memory.getMemory(index + i);
@@ -439,46 +439,46 @@ class Chip8 {
     resetMemory();
 
     opCodesMap = <int, OPCODE_FUNTION>{
-      0x0: _0x0_CLEAR_OR_RETURN,
-      0x1: _0x1_JUMP,
-      0x00E0: _0x00E0_CLEAR_SCREEN,
-      0x2: _0x2_CALL_SUBROUTINE,
-      0x3: _0x3_SKIP_IF_NN,
-      0x4: _0x4_SKIP_IF_NN,
-      0x5: _0x5_SKIP_IF_XY,
-      0x6: _0x6_SET_X_TO_NN,
-      0x7: _0x7XNN_ADD_NN_TO_X,
-      0xA: _0xA_SET_I_TO_NNN,
-      0xB: _0xBNNN_JUMP_TO_NNN_PLUSregisters0,
-      0xC: _0xCXNN_SET_X_RANDOM,
-      0xD: _0xDXYN_DRAW_SPRITE,
-      0xE: _0xE_KEY_SKIP,
-      0xF: _0xF_ETC,
-      0x8: _0x8_MATH,
-      0x9: _0x9XY0_SKIP_IF_X_NEQ_Y
+      0x0: OPCODE_0x0,
+      0x1: OPCODE_0x1,
+      0x00E0: OPCODE_0x00E0,
+      0x2: OPCODE_0x2,
+      0x3: OPCODE_0x3,
+      0x4: OPCODE_0x4,
+      0x5: OPCODE_0x5,
+      0x6: OPCODE_0x6,
+      0x7: OPCODE_0x7,
+      0xA: OPCODE_0xANNN,
+      0xB: OPCODE_0xBNNN,
+      0xC: OPCODE_0xCNNN,
+      0xD: OPCODE_DXYN,
+      0xE: OPCODE_0xE_MAIN,
+      0xF: OPCODE_0xF_MAIN,
+      0x8: OPCODE_0x8_MAIN,
+      0x9: OPCODE_0x9XY0
     };
 
     OtherOpCodesMap = <int, OPCODE_FUNTION>{
-      0x07: _0xFX07_SET_X_TO_DELAY,
-      0x0A: _0xFX0A_WAIT_FOR_KEY,
-      0x15: _0xFX15_SET_DELAY_TO_X,
-      0x18: _0xFX18_SET_SOUND_TO_X,
-      0x1E: _0xFX1E_ADD_X_TO_I,
-      0x29: _0xFX29_SET_I_SPRITE,
-      0x33: _0xFX33_STORE_BCD_IN_MEMORY,
-      0x55: _0xFX55_STORE_MEMORY,
-      0x65: _0xFX65_FILLregisters,
+      0x07: OPCODE_0xFX07,
+      0x0A: OPCODE_0xFX0A,
+      0x15: OPCODE_0xFX15,
+      0x18: OPCODE_0xFX18,
+      0x1E: OPCODE_0xFX1E,
+      0x29: OPCODE_0xFX29,
+      0x33: OPCODE_0xFX33,
+      0x55: OPCODE_0xFX55,
+      0x65: OPCODE_0xFX65,
     };
     MathOpCodes = <int, OPCODE_FUNTION>{
-      0x0: _0x8XY0_SET_X_TO_Y,
-      0x1: _0x8XY1_SET_X_TO_OR_Y,
-      0x2: _0x8XY2_SET_X_TO_AND_Y,
-      0x3: _0x8XY3_SET_X_TO_XOR_Y,
-      0x4: _0x8XY4_ADD_X_TO_Y_CARRY,
-      0x5: _0x8XY5_SUB_Y_FROM_X_CARRY,
-      0x6: _0x8XY6_SHIFTR_X_CARRY,
-      0x7: _0x8XY7_SET_X_TO_Y_MINUS_X_CARRY,
-      0xE: _0x8XYE_SHIFTL_X_CARRY,
+      0x0: OPCODE_0x8XY0,
+      0x1: OPCODE_0x8XY1,
+      0x2: OPCODE_0x8XY2,
+      0x3: OPCODE_0x8XY3,
+      0x4: OPCODE_08XY4,
+      0x5: OPCODE_0x8XY5,
+      0x6: OPCODE_0x8XY6,
+      0x7: OPCODE_0x8XY7,
+      0xE: OPCODE_0x8XYE,
     };
     debugPrint(opCodesMap.keys.toString());
   }
