@@ -2,9 +2,14 @@
 
 This is a Chip-8 compiler designed to emulate and run Chip-8 programs.
 
-|           ![Space Invaders](images/space-invaders.png)           |     ![Space Invaders Game](images/space-invaders-game.png)     |
+![Chip8](images/Screenshot/CHIP8.png)
+
+### Preview For Computer app
+  |           ![Space Invaders](images/space-invaders.png)           |     ![Space Invaders Game](images/space-invaders-game.png)     |
 | :--------------------------------------------: | :------------------------------------: |
 | ![Soccer](images/soccer.png) | ![Tetris](images/Tetris.png) |
+
+
 
 ## Overview
 
@@ -34,6 +39,22 @@ The Chip-8 is an interpreted programming language used in the 1970s and early 19
 
 - **Emscripten**
   - [Emscripten](https://emscripten.org/docs/getting_started/index.html) required if compiling to WebAssembly.
+ 
+- **Flutter**
+  - You'll need to set up the IDE and mobile device emulator, or any mobile testing device on your local system.
+
+  - **Flutter Environment**: You'll need to have the following installed:
+      1. [Flutter SDK](https://flutter.dev/docs/get-started/install)
+      2. [Android Studio](https://developer.android.com/studio)
+
+  - ***Ensure you are testing the app using Flutter version [3.0.1](https://docs.flutter.dev/development/tools/sdk/releases?tab=windows) and above.***
+
+    For checking flutter version:
+      - Run `flutter --version` in terminal
+
+  If your version is not upto date, follow these steps to upgrade:
+      - `flutter channel stable` to switch to the channel having stable version of flutter updates
+      - `flutter upgrade` to get the latest flutter version
     
 ### Building
 Clone the repository into your system and go to the root directory of the project.
@@ -46,10 +67,30 @@ cd CHIP-8
 ```
 
 #### Windows
+
+Go to the source-code folder.
+```console
+cd source-code/
+```
 Just Run the following command in root directory.
 
 ```console
 g++ -I src/include -L src/lib main.cpp Chip8.cpp Platform.cpp -lmingw32 -lSDl2main -lSDl2 -o chip8
+```
+
+### Mobile
+Go to the flutter source folder.
+```console
+cd flutter/chip8/
+```
+Run the following command in root directory.
+
+```console
+flutter build apk
+```
+
+```console
+flutter install
 ```
 
 ## Usage
@@ -58,14 +99,24 @@ g++ -I src/include -L src/lib main.cpp Chip8.cpp Platform.cpp -lmingw32 -lSDl2ma
 
 - Some ROMs are provided in the /ROMs directory.
 
+## Contributing
+
+Whether you have some feauture requests/ideas, code improvements, refactoring, performance improvements, help is always Welcome. The more is done, better it gets.
+
+If you found any bugs, consider opening an [issue](https://github.com/imperialrogers/CHIP-8/issues/new).
+
 ## References
+
+- [Emulator 101 Reference](http://emulator101.com/)
+
+- [Timendus' Chip-8 Test Suite](https://github.com/Timendus/chip8-test-suite)
+  
+- [CHIP-8 on Wikipedia](https://en.wikipedia.org/wiki/CHIP-8)
 
 - [Cowgod's Chip-8 Technical Reference v1.0](http://devernay.free.fr/hacks/chip8/C8TECH10.HTM)
 
-- [CHIP-8 on Wikipedia](https://en.wikipedia.org/wiki/CHIP-8)
+- [Austin Morlan's Building a Chip-8 Emulator(C++)](https://austinmorlan.com/posts/chip8_emulator/#source-code)
 
 - [Explanation of differing opcode behaviours on CHIP8/CHIP-48/SCHIP](https://www.reddit.com/r/programming/comments/3ca4ry/writing_a_chip8_interpreteremulator_in_c14_10/csuepjm/)
-
-- [Austin Morlan's Building a Chip-8 Emulator(C++)](https://austinmorlan.com/posts/chip8_emulator/#source-code)
 
 - [MDN Web Docs](https://developer.mozilla.org/en-US/docs/WebAssembly/C_to_wasm)
