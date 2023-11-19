@@ -36,9 +36,6 @@ The Chip-8 is an interpreted programming language used in the 1970s and early 19
   - **Linux:** install using `sudo apt install libsdl2-dev`.
   - **Windows:** download the [SDL2-2.0.10 development libraries](https://www.libsdl.org/download-2.0.php) and place them under a new `external` folder in the root of this project. To run, download the [SDL2 runtime binaries](https://www.libsdl.org/download-2.0.php) and put `SDL2.dll` into the folder with your compiled binary.
   - **macOS:** install using `brew install sdl2`.
-
-- **Emscripten**
-  - [Emscripten](https://emscripten.org/docs/getting_started/index.html) required if compiling to WebAssembly.
  
 - **Flutter**
   - You'll need to set up the IDE and mobile device emulator, or any mobile testing device on your local system.
