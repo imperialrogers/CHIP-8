@@ -3,6 +3,9 @@ import 'package:chip8/decoder/decoder.dart';
 import 'package:chip8/models/chip8.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:smart_alert_dialog/models/alert_dialog_style.dart';
+import 'package:smart_alert_dialog/models/alert_dialog_text.dart';
+import 'package:smart_alert_dialog/smart_alert_dialog.dart';
 import 'constants/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -41,7 +44,7 @@ class Chip8Screen extends StatefulWidget {
 
 class _Chip8ScreenState extends State<Chip8Screen> {
   Set<int> inputKeys = new Set<int>();
-  String _gameROM = "Tetris";
+  String _gameROM = "IBM";
   List<int> buttonList = [
     1,
     2,
@@ -149,7 +152,23 @@ class _Chip8ScreenState extends State<Chip8Screen> {
               color: Colors.white,
             ),
             tooltip: "Help",
-            onPressed: _launchURL,
+            onPressed: () => showDialog(
+              context: context,
+              builder: (_) => SmartAlertDialog(
+                title: "CHIP-8 EMULATOR",
+                isDismissible: true,
+                onConfirmPressed: () => _launchURL(),
+                text: AlertDialogText(dismiss: "Visit Website"),
+                style: AlertDialogStyle(
+                  dismiss: TextStyle(
+                    color: Colors.black,
+                    debugLabel: "Dismiss",
+                  ),
+                ),
+                message:
+                    "Thank you for using our mobile application.\n\nPlease note few games may be glitchy or may run get glitched after end and after game completion you might have to press the START button manually. We are constantly working for better user experience.\n\nInstruction Manual and Controls for every game will be available very soon.\n\nFor more information, visit our website.\n\nVersion: 0.0.0\n\nDeveloped By Chintan Chawda.",
+              ),
+            ),
           ),
         ],
       ),
@@ -353,7 +372,7 @@ class _Chip8ScreenState extends State<Chip8Screen> {
         children: List.generate(
           16,
           (i) {
-            return new GestureDetector(
+            return new InkWell(
               child: ElevatedButton(
                 style: ButtonStyle(
                   padding: MaterialStateProperty.all<EdgeInsets>(
