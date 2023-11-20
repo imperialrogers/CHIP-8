@@ -98,7 +98,7 @@ flutter install
 
 `Download Mobile APK`
 
-- You can download the mobile apk from release section or from the given link: [DOWNLOAD APK](https://github.com/imperialrogers/CHIP-8/releases/download/v0.0.0-test/Chip8.apk)
+- You can download the mobile apk from [RELEASES](https://github.com/imperialrogers/CHIP-8/releases/tag/v0.0.0) section or from the given link: [DOWNLOAD APK](https://github.com/imperialrogers/CHIP-8/releases/download/v0.0.0/Chip8.apk)
 
 ## Contributing
 
